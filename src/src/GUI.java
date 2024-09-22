@@ -1,6 +1,8 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class GUI {
+public class GUI implements ActionListener { // GUI implement the action listener so that we can use the action events
     public static void main(String[] args) {
         new GUI();
     }
@@ -10,6 +12,9 @@ public class GUI {
     JMenuBar menuBar; // creating a menu bar which will be on the top og the app
     JMenu menuFile,menuEdit,menuFormat,menuTheme,menuLanguage; // these are called submenu in short these are menu in the menu bar
     JMenuItem iNew, iOpen, iSave, iSaveAs, iExit; // these are the menu item they are present in the menu
+
+    FileFunction fileFunction = new FileFunction(this); // creating the object and passing this object {in short the gui object that got created}
+
     public void createWindow(){
         window = new JFrame("Sandesh"); // initialized the frame with a title of sandesh
         window.setSize(800,600); // setting the height and width of the frame by default
@@ -48,6 +53,10 @@ public class GUI {
         menuFile.add(iSave); // adding the menu item onto the file menu
         menuFile.add(iSaveAs); // adding the menu item onto the file menu
         menuFile.add(iExit); // adding the menu item onto the file menu
+        iNew.addActionListener(this); // we have implement the action listener, so we can use this to refer to the action listener
+        iNew.setActionCommand("New"); // whenever action occur on this INew a new action command will be generated named new
+        iOpen.addActionListener(this); // adding an action listener to the Open
+        iOpen.setActionCommand("Open"); // adding the action command to the open
     }
 
     public GUI(){ // constructor of the class
@@ -56,5 +65,14 @@ public class GUI {
         createMenuBar(); // creating the menus and menu bar
         createFileMenu(); // creating the menu items for the file menu
         window.setVisible(true); // display the window
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand(); // whenever a action get performed this method will return that event action command
+        switch (command){ // checking which command was it
+            case "New": fileFunction.newFile(); break; // if the action command is New this case will get executed
+            case "Open" : fileFunction.open();break; // if the action command is Open this case will get executed
+        }
     }
 }
