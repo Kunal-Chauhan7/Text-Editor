@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 
 public class FileFunction {
     GUI gui; // creating an object of GUI
@@ -12,6 +13,8 @@ public class FileFunction {
     public void newFile(){
         gui.textArea.setText(""); // setting the textArea of the file to blank
         gui.window.setTitle("New"); // changing to the name of the window to new
+        fileName = null; // means a new file name will be created it should be null
+        fileAddress = null; // the file address will be null as well
     }
     void open(){
         FileDialog fd = new FileDialog(gui.window,"Open",FileDialog.LOAD); // made a object of File Dialog and calling it on the gui window and the fileDialog is of LOAD
@@ -35,5 +38,38 @@ public class FileFunction {
         } catch(Exception e){
             System.out.println("FILE NOT OPENED!");
         }
+    }
+    void save (){
+        if(fileName==null){ // the file does not exist
+            saveAs(); // make a new file in this case
+        } else{
+            try{
+                FileWriter fileWriter = new FileWriter(fileAddress + fileName); // open the file for writing or make the file to write
+                fileWriter.write(gui.textArea.getText()); // get the text from the textArea
+                gui.window.setTitle(fileName); // set the name of the window
+                fileWriter.close(); //close the writer
+            }catch (Exception e){
+                System.out.println("SOMETHING WENT WRONG");
+            }
+        }
+    }
+    void saveAs(){
+        FileDialog fd = new FileDialog(gui.window,"Save As",FileDialog.SAVE); // so what exactly is going on here is we are making a new file dialog for save as
+        fd.setVisible(true); // making that fileDialog visible
+        if(fd.getFile()!=null){ // that file is not null
+            fileName = fd.getFile(); // get the filename
+            fileAddress = fd.getDirectory(); // the address we want to store the data
+            gui.window.setTitle(fileName); // set the title of the window of that file
+        }
+        try {
+            FileWriter fileWriter = new FileWriter(fileAddress + fileName); // open the file for writing or make the file to write
+            fileWriter.write(gui.textArea.getText()); // get the text from the textArea
+            fileWriter.close();
+        } catch (Exception e){
+            System.out.println("SOMETHING WENT WRONG!");
+        }
+    }
+    void exit(){
+        System.exit(0);
     }
 }

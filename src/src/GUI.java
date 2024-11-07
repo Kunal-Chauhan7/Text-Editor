@@ -57,6 +57,12 @@ public class GUI implements ActionListener { // GUI implement the action listene
         iNew.setActionCommand("New"); // whenever action occur on this INew a new action command will be generated named new
         iOpen.addActionListener(this); // adding an action listener to the Open
         iOpen.setActionCommand("Open"); // adding the action command to the open
+        iSaveAs.addActionListener(this); //adding the action listener
+        iSaveAs.setActionCommand("SaveAs"); // setting the command associated to this option
+        iSave.addActionListener(this); //adding the action listener
+        iSave.setActionCommand("Save"); // setting the command associated to this option
+        iExit.addActionListener(this); //adding the action listener
+        iExit.setActionCommand("Exit"); // setting the command associated to this option
     }
 
     public GUI(){ // constructor of the class
@@ -73,6 +79,9 @@ public class GUI implements ActionListener { // GUI implement the action listene
         switch (command){ // checking which command was it
             case "New": fileFunction.newFile(); break; // if the action command is New this case will get executed
             case "Open" : fileFunction.open();break; // if the action command is Open this case will get executed
+            case "Save" : fileFunction.save();break; // if the action command is Open this case will get executed
+            case "SaveAs" : fileFunction.saveAs();break; // if the action command is Open this case will get executed
+            case "Exit" : fileFunction.exit();break; // exit
         }
     }
 }
