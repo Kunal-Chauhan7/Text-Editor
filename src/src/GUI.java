@@ -17,7 +17,7 @@ public class GUI implements ActionListener { // GUI implement the action listene
     FileFunction fileFunction = new FileFunction(this); // creating the object and passing this object {in short the gui object that got created}
 
     public void createWindow(){
-        window = new JFrame("Sandesh"); // initialized the frame with a title of sandesh
+        window = new JFrame("Pandu lipi"); // initialized the frame with a title of sandesh
         window.setSize(800,600); // setting the height and width of the frame by default
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // making sure that the frame closes properly
     }
