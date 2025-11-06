@@ -12,6 +12,7 @@ public class GUI implements ActionListener { // GUI implement the action listene
     JMenuBar menuBar; // creating a menu bar which will be on the top og the app
     JMenu menuFile,menuEdit,menuFormat,menuTheme,menuLanguage; // these are called submenu in short these are menu in the menu bar
     JMenuItem iNew, iOpen, iSave, iSaveAs, iExit; // these are the menu item they are present in the menu
+    JMenuItem themeDark, themeLight;
 
     FileFunction fileFunction = new FileFunction(this); // creating the object and passing this object {in short the gui object that got created}
 
@@ -42,6 +43,23 @@ public class GUI implements ActionListener { // GUI implement the action listene
         menuBar.add(menuLanguage); //adding the menu onto the menu bar
     }
 
+    public void createTheme(){
+
+        fileFunction.ChangeThemeToDark(); // making the theme dark by default whenever someone opens the IDE
+
+        themeLight = new JMenuItem("Light"); // creating light theme menu item
+        themeDark = new JMenuItem("Dark"); //  creating dark theme menu item
+
+        menuTheme.add(themeDark); // adding dark theme to the theme menu
+        menuTheme.add(themeLight); // adding light theme to the theme menu
+
+        themeLight.addActionListener(this); // adding action listener on light theme menu item
+        themeLight.setActionCommand("ChangeLightTheme"); // adding action command on that theme
+
+        themeDark.addActionListener(this); // adding action listener on dark theme menu item
+        themeDark.setActionCommand("ChangeDarkTheme"); // adding action command on that theme
+    }
+
     public void createFileMenu(){
         iNew = new JMenuItem("New"); // initializing the menu item for the file menu
         iOpen = new JMenuItem("Open"); // initializing the menu item for the file menu
@@ -70,6 +88,7 @@ public class GUI implements ActionListener { // GUI implement the action listene
         createTextArea(); // creating the text area
         createMenuBar(); // creating the menus and menu bar
         createFileMenu(); // creating the menu items for the file menu
+        createTheme(); // creating the theme menu bar
         window.setVisible(true); // display the window
     }
 
@@ -82,6 +101,8 @@ public class GUI implements ActionListener { // GUI implement the action listene
             case "Save" : fileFunction.save();break; // if the action command is Open this case will get executed
             case "SaveAs" : fileFunction.saveAs();break; // if the action command is Open this case will get executed
             case "Exit" : fileFunction.exit();break; // exit
+            case "ChangeLightTheme" : fileFunction.ChangeThemeToLight(); break;
+            case "ChangeDarkTheme" :fileFunction.ChangeThemeToDark(); break;
         }
     }
 }

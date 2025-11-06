@@ -72,4 +72,12 @@ public class FileFunction {
     void exit(){
         System.exit(0);
     }
+
+    void ChangeThemeToDark(){
+        gui.textArea.setBackground(Color.DARK_GRAY);
+    }
+
+    void ChangeThemeToLight(){
+        gui.textArea.setBackground(new Color(228, 245, 243));
+    }
 }
