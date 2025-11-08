@@ -1,7 +1,14 @@
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileFunction {
     GUI gui; // creating an object of GUI
@@ -25,14 +32,14 @@ public class FileFunction {
             fileAddress = fd.getDirectory(); // getting the address of the file
             gui.window.setTitle(fileName); // display the file name
         }
-        System.out.println("The File name and the address : "+fileName+fileAddress);
         try{
             BufferedReader br = new BufferedReader(new FileReader(fileAddress + fileName // read from this file
             )); // read characters from the character input stream
             gui.textArea.setText(""); // setting the text input area as blank
             String line = null;
             while((line = br.readLine())!=null){ // while the br can read line we will iterate
-                gui.textArea.append(line+"\n"); // adding the current line which is read by the br to the text area
+                appendToPane(gui.textArea,line+"\n",Color.BLACK); // adding the current line which is read by the br to the text area
+//                gui.textArea.ap(line+"\n"); // adding the current line which is read by the br to the text area
             }
             br.close(); // close the file reader
         } catch(Exception e){
@@ -80,4 +87,51 @@ public class FileFunction {
     void ChangeThemeToLight(){
         gui.textArea.setBackground(new Color(228, 245, 243));
     }
+
+    void CheckSyntaxHiLighting(HashMap<String,Color> languageKeyWordsAndSyntax){
+        String text = gui.textArea.getText(); // get the content of the file
+        StyledDocument doc = gui.textArea.getStyledDocument(); // get doc of the textpane
+
+        Style defaultStyle = gui.textArea.addStyle("Default",null);  // making the default style
+        StyleConstants.setForeground(defaultStyle,Color.black); // making the color of the text black or default
+        doc.setCharacterAttributes(0,text.length(),defaultStyle,true); //make the whole pane black or default
+
+
+        for(Map.Entry<String,Color>e:languageKeyWordsAndSyntax.entrySet()){ // for all the keywords
+
+
+            String keyWord = e.getKey(); // get keyword
+
+            Color color = e.getValue(); // get color
+
+            int index = text.indexOf(keyWord); // first occurrence of keyword
+
+            while(index>=0){
+                boolean beforeKeywordIsOk = (index == 0 || !Character.isLetterOrDigit(text.charAt(index - 1))); // checking if the character before the keyword a letter or digit in shot checking for white space
+                // so we can see here like public so this is a keyword as long as it has whitespace before start and end so it can be a complete stand alone keyword
+                boolean afterKeyWordIsOk = (index + keyWord.length() == text.length() || !Character.isLetterOrDigit(text.charAt(index + keyWord.length()))); // same as above now after the keyword
+                if(beforeKeywordIsOk && afterKeyWordIsOk){ // check if it is a stand alone keyword only
+                    Style style = gui.textArea.addStyle(keyWord,null); // making a style
+                    StyleConstants.setForeground(style,color); // setting the color
+                    doc.setCharacterAttributes(index,keyWord.length(),style,true); // changing the color
+                }
+                index = text.indexOf(keyWord,index+keyWord.length()); // go to the next occurrence for the keyword
+            }
+
+        }
+
+    }
+
+    private void appendToPane(JTextPane tp, String msg, Color c) {
+        StyledDocument doc = tp.getStyledDocument();
+        Style style = tp.addStyle("Color Style", null);
+        StyleConstants.setForeground(style, c);
+
+        try {
+            doc.insertString(doc.getLength(), msg, style); // appending the text to the pane
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

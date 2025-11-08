@@ -1,13 +1,19 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class GUI implements ActionListener { // GUI implement the action listener so that we can use the action events
+
+    public static HashMap<String, Color> LanguageKeyWordsAndSyntax; // making an Object so we can pass the Keywords
+
     public static void main(String[] args) {
         new GUI();
     }
     JFrame window; // creating a window for the application so basically a window where all the function will be added
-    JTextArea textArea; // this is the place where the user can write their code and text
+    JTextPane textArea; // this is the place where the user can write their code and text
+    // edit the JTextArea does not support styling so changed it to JTextPane
     JScrollPane scrollPane; // this is that scroll bar which will appear horizontally and vertically
     JMenuBar menuBar; // creating a menu bar which will be on the top og the app
     JMenu menuFile,menuEdit,menuFormat,menuTheme,menuLanguage; // these are called submenu in short these are menu in the menu bar
@@ -21,12 +27,18 @@ public class GUI implements ActionListener { // GUI implement the action listene
         window.setSize(800,600); // setting the height and width of the frame by default
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // making sure that the frame closes properly
     }
-    public void createTextArea(){
-        textArea = new JTextArea(); // initialized the textarea for writing space
-        scrollPane = new JScrollPane(textArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    public void createTextArea() {
+        textArea = new JTextPane(); // initialized the textarea for writing space
+        scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // initializing the scroll pane around the text area and passing the arguments when to show the scrollbar pane
         scrollPane.setBorder(BorderFactory.createEmptyBorder()); // so this will create an empty border and that means that the scroll pane will have 0 border
         window.add(scrollPane); // adding the scroll pane to the window and it will the text area as well
+        textArea.addKeyListener(new java.awt.event.KeyAdapter() { // So i am adding an event listener here so whenever a key is pressed this will get executed
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                fileFunction.CheckSyntaxHiLighting(LanguageKeyWordsAndSyntax); // call the method
+            }
+        });
     }
     public void createMenuBar(){
         menuBar = new JMenuBar(); // creating a menu bar which contains the menu
@@ -45,7 +57,7 @@ public class GUI implements ActionListener { // GUI implement the action listene
 
     public void createTheme(){
 
-        fileFunction.ChangeThemeToDark(); // making the theme dark by default whenever someone opens the IDE
+        fileFunction.ChangeThemeToLight(); // making the theme dark by default whenever someone opens the IDE
 
         themeLight = new JMenuItem("Light"); // creating light theme menu item
         themeDark = new JMenuItem("Dark"); //  creating dark theme menu item
@@ -89,6 +101,7 @@ public class GUI implements ActionListener { // GUI implement the action listene
         createMenuBar(); // creating the menus and menu bar
         createFileMenu(); // creating the menu items for the file menu
         createTheme(); // creating the theme menu bar
+        LanguageKeyWordsAndSyntax = SyntaxHilighting.JAVAKEYWORDS; // default keep the syntax for java
         window.setVisible(true); // display the window
     }
 
