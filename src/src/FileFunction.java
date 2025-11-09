@@ -9,8 +9,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileFunction {
+    static String THEME;
     GUI gui; // creating an object of GUI
     String fileName; // this is the file name that will be opened in the editor
     String fileAddress; // this will be the address of the file that has been opened in the file editor
@@ -38,7 +41,12 @@ public class FileFunction {
             gui.textArea.setText(""); // setting the text input area as blank
             String line = null;
             while((line = br.readLine())!=null){ // while the br can read line we will iterate
-                appendToPane(gui.textArea,line+"\n",Color.BLACK); // adding the current line which is read by the br to the text area
+                if(THEME.equals("Light")){
+                    appendToPane(gui.textArea,line+"\n",Color.BLACK); // adding the current line which is read by the br to the text area
+                }
+                else{
+                    appendToPane(gui.textArea,line+"\n",Color.lightGray); // adding the current line which is read by the br to the text area
+                }
 //                gui.textArea.ap(line+"\n"); // adding the current line which is read by the br to the text area
             }
             br.close(); // close the file reader
@@ -82,18 +90,23 @@ public class FileFunction {
 
     void ChangeThemeToDark(){
         gui.textArea.setBackground(Color.DARK_GRAY);
+        THEME = "Dark";
     }
 
     void ChangeThemeToLight(){
-        gui.textArea.setBackground(new Color(228, 245, 243));
+        gui.textArea.setBackground(new Color(241, 249, 255));
+        THEME = "Light";
     }
 
     void CheckSyntaxHiLighting(HashMap<String,Color> languageKeyWordsAndSyntax){
         String text = gui.textArea.getText(); // get the content of the file
-        StyledDocument doc = gui.textArea.getStyledDocument(); // get doc of the textpane
+        StyledDocument doc = gui.textArea.getStyledDocument(); // get doc of the text pane
 
         Style defaultStyle = gui.textArea.addStyle("Default",null);  // making the default style
-        StyleConstants.setForeground(defaultStyle,Color.black); // making the color of the text black or default
+        if(THEME.equals("Light"))
+            StyleConstants.setForeground(defaultStyle,Color.black); // making the color of the text black or default
+        else
+            StyleConstants.setForeground(defaultStyle,Color.lightGray); // making the color of the text gray or default
         doc.setCharacterAttributes(0,text.length(),defaultStyle,true); //make the whole pane black or default
 
 
@@ -104,19 +117,28 @@ public class FileFunction {
 
             Color color = e.getValue(); // get color
 
-            int index = text.indexOf(keyWord); // first occurrence of keyword
+            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(keyWord) + "\\b"); // making a pattern
+            Matcher matcher = pattern.matcher(text); // pattern matcher
 
-            while(index>=0){
-                boolean beforeKeywordIsOk = (index == 0 || !Character.isLetterOrDigit(text.charAt(index - 1))); // checking if the character before the keyword a letter or digit in shot checking for white space
-                // so we can see here like public so this is a keyword as long as it has whitespace before start and end so it can be a complete stand alone keyword
-                boolean afterKeyWordIsOk = (index + keyWord.length() == text.length() || !Character.isLetterOrDigit(text.charAt(index + keyWord.length()))); // same as above now after the keyword
-                if(beforeKeywordIsOk && afterKeyWordIsOk){ // check if it is a stand alone keyword only
-                    Style style = gui.textArea.addStyle(keyWord,null); // making a style
-                    StyleConstants.setForeground(style,color); // setting the color
-                    doc.setCharacterAttributes(index,keyWord.length(),style,true); // changing the color
-                }
-                index = text.indexOf(keyWord,index+keyWord.length()); // go to the next occurrence for the keyword
+            while(matcher.find()){
+                Style style = gui.textArea.addStyle(keyWord, null); // add style
+                StyleConstants.setForeground(style, color); // changing color
+                doc.setCharacterAttributes(matcher.start(), keyWord.length(), style, true); // adding style to the text
             }
+
+//            int index = text.indexOf(keyWord); // first occurrence of keyword
+
+//            while(index>=0){
+//                boolean beforeKeywordIsOk = (index == 0 || !Character.isLetterOrDigit(text.charAt(index - 1))); // checking if the character before the keyword a letter or digit in shot checking for white space
+//                // so we can see here like public so this is a keyword as long as it has whitespace before start and end so it can be a complete stand alone keyword
+//                boolean afterKeyWordIsOk = (index + keyWord.length() == text.length() || !Character.isLetterOrDigit(text.charAt(index + keyWord.length()))); // same as above now after the keyword
+//                if(beforeKeywordIsOk && afterKeyWordIsOk){ // check if it is a stand alone keyword only
+//                    Style style = gui.textArea.addStyle(keyWord,null); // making a style
+//                    StyleConstants.setForeground(style,color); // setting the color
+//                    doc.setCharacterAttributes(index,keyWord.length(),style,true); // changing the color
+//                }
+//                index = text.indexOf(keyWord,index+keyWord.length()); // go to the next occurrence for the keyword
+//            }
 
         }
 
